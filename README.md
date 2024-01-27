@@ -2,7 +2,7 @@
 
 ## Tech Stack
 
-This web app uses Flask for backend, React.js for frontend, and mysql for database.
+This web app uses Flask for backend, Vue.js for frontend, and mysql for database.
 
 ## Running the starter code
 
