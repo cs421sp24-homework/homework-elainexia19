@@ -9,10 +9,11 @@ cursor = db.cursor()
  
 @app.route('/')
 def hello_world():
-    sql = 'select example from test'
-    cursor.execute(sql)
-    result = cursor.fetchone()
-    # print(result)
+    if flask.request.method == 'GET':
+        sql = 'select example from test'
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        # print(result)
     return flask.render_template('login.html', msg=result)
  
 if __name__ == '__main__':
