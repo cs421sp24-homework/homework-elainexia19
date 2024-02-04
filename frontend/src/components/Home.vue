@@ -1,0 +1,272 @@
+<!-- html部分 -->
+<template>
+  <div class="content">
+    <div class="header">
+      <span class="left"><b>QYay!</b>, get connected through your live Q&A platform</span>
+    </div>
+    <div class="welcome"><h1>Welcome, {{ username }}!</h1></div>
+    <div>
+      <div class="title">
+        Create an event to get started &rarr;
+        <button class="create" @click="createEvent"><b>Create Event</b></button>
+        <h2>My Events</h2>
+      </div>
+    </div>
+    <div class="login">
+      <table class="events">
+        <tr>
+          <th></th>
+          <th>Event</th>
+          <th>Date</th>
+          <th>Start Time</th>
+          <th>End Time</th>
+        </tr>
+        <tr class="elements" v-for="(event, index) in events" :key="event.id">
+          <td>{{ index + 1 }}</td>
+          <td>{{ event.name }}<span class="dscrp" v-if="event.description"><br>{{ event.description }}</span></td>
+          <td>{{ event.date }}</td>
+          <td>{{ event.start_time }}</td>
+          <td>{{ event.end_time }}</td>
+        </tr>
+      </table>
+      <!-- <ul class="events">
+        <li v-for="(event, index) in events" :key="event.id">
+          {{ index+1 }} {{ event.name }} {{ event.description }} {{ event.date }} 
+          {{ event.start_time }} {{ event.end_time }} {{ event.code }}
+        </li>
+      </ul> -->
+    </div>
+  </div>
+</template>
+
+<!-- js部分 -->
+<script>
+import axios from 'axios'
+export default {
+  data () {
+    return {
+      username: null,
+      events: null
+    }
+  },
+  mounted() {
+    this.fetchUsername()
+    this.fetchEvents()
+  },
+  methods: {
+    async fetchUsername () {
+      try{
+        const path = 'http://127.0.0.1:5000/home'
+        const res = await axios.get(path)
+        this.username = res.data.username
+        if (!this.username) {
+          this.$router.replace({ path: "/" })
+        }
+      } catch(error) {
+        console.error(error)
+      }
+    },
+    async fetchEvents () {
+      try{
+          const path = 'http://127.0.0.1:5000/home'
+          const res = await axios.get(path)
+          this.events = res.data.events
+      } catch(error) {
+          console.error(error)
+      }
+    },
+    createEvent () {
+      this.$router.replace({ path: "/create_event" })
+    }
+  }
+}
+</script>
+
+<style>
+.header {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+    height: 55px;
+    background-color: #3498db;
+}
+
+.left {
+    position: absolute;
+    left: 20px;
+    font-size: 20px;
+    line-height: 55px;
+    color: white;
+    text-align: center;
+}
+
+.login {
+  font-family: sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background-color: black; */
+}
+
+.welcome {
+  padding-top: 25px;
+  text-align: center;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
+}
+
+.title {
+  position: relative;
+  width: 50%;
+  margin: 40px auto;
+  text-align: center;
+  font-size: 1.2em;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
+}
+
+.title h2 {
+  margin-top: 60px;
+}
+
+.create {
+  border: 0;
+  background: none;
+  /* display: block; */
+  /* margin: auto; */
+  margin-left: 20px;
+  text-align: center;
+  border: 2px solid #405BE0;
+  padding: 8px 30px;
+  outline: none;
+  /* color: white; */
+  border-radius: 10px;
+  transition: 0.25s;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.create:hover {
+  background: #405BE0;
+  color: white;
+}
+
+.events {
+  width: 70%;
+  padding: 20px 30px;
+  /* position: absolute; */
+  /* top: 50%; */
+  /* left: 50%; */
+  /* background: #191919; */
+  border: 2px solid #3498db;
+  border-radius: 5px;
+  list-style: none;
+  font-size: 1.1em;
+}
+
+.events th {
+  text-align: left;
+}
+
+.events .elements:hover {
+  background: #3498db;
+  color: white;
+}
+
+.dscrp {
+  color: #646262;
+  font-size: 0.9em;
+}
+
+.dscrp:hover {
+  color: white;
+}
+
+.box input[type="text"],
+.box input[type="password"] {
+  border: 0;
+  background: none;
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 25px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  border: 2px solid #3498db;
+  padding: 12px 15px;
+  width: 250px;
+  outline: none;
+  /* color: white; */
+  border-radius: 15px;
+  transition: 0.25s;
+}
+
+.box h2 {
+  /* color: white; */
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.box input[type="text"]:focus,
+.box input[type="password"]:focus {
+  width: 300px;
+  border-color: #405BE0;
+}
+
+.box input[type="submit"] {
+  border: 0;
+  background: none;
+  display: block;
+  margin: 20px auto;
+  text-align: center;
+  border: 2px solid #405BE0;
+  padding: 8px 30px;
+  outline: none;
+  /* color: white; */
+  border-radius: 15px;
+  transition: 0.25s;
+  cursor: pointer;
+}
+
+.box input[type="submit"]:hover {
+  background: #405BE0;
+  color: white;
+}
+
+.link-text {
+  color: #86A8FA;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.link-text:hover {
+  color: #2340CF;
+}
+
+.text-warning {
+  color: #EE3D34;
+}
+
+.alert {
+  margin-top: 10px;
+  color: red;
+}
+</style>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<!-- <style scoped>
+h1, h2 {
+  font-weight: normal;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+a {
+  color: #42b983;
+}
+</style> -->

@@ -1,4 +1,36 @@
+<!-- html部分 -->
 <template>
+  <div>
+    <span>{{ serverResponse }}</span>
+    <!--这里使用{{}}来引用JavaScript中赋给this的值-->
+    <button @click="getData">get data</button>
+  </div>
+</template>
+<!-- js部分 -->
+<script>
+import axios from 'axios'
+export default {
+  data: function () {
+    return {
+      serverResponse: 'res_test'
+    }
+  },
+  methods: {
+    getData () {
+      const path = 'http://127.0.0.1:5000/getMsg'
+      axios.get(path).then(res => {
+        var msg = res.data.msg
+        this.serverResponse = msg
+        alter('Success' + response.status + ',' + response.data + ',' + msg)
+      }).catch(error => {
+        console.error(error)
+      })
+    }
+  }
+}
+</script>
+
+<!-- <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
     <h2>Essential Links</h2>
@@ -92,7 +124,7 @@ export default {
     }
   }
 }
-</script>
+</script> -->
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
