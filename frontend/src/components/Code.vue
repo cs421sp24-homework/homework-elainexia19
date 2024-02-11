@@ -7,7 +7,7 @@
     <div class="welcome"><h1>Event Created!</h1></div>
     <div class="title">
         <p>Here is the code to invite others to join:</p>
-        <p>{{ $route.query.code }}</p>
+        <p class="code">{{ $route.query.code }}</p>
         <button class="save" @click="homepage"><b>Saved Code</b></button>
     </div>
 </div>
@@ -31,7 +31,7 @@ export default {
                 const res = await axios.get(path)
                 this.username = res.data.username
                 if (!this.username) {
-                this.$router.replace({ path: "/" })
+                    this.$router.replace({ path: "/" })
                 }
             } catch(error) {
                 console.error(error)
@@ -49,14 +49,14 @@ export default {
     position: relative;
     margin-left: auto;
     margin-right: auto;
-    width: 80%;
+    /* width: 80%; */
     height: 55px;
     background-color: #3498db;
 }
 
 .left {
     position: absolute;
-    left: 20px;
+    left: 200px;
     font-size: 20px;
     line-height: 55px;
     color: white;
@@ -75,6 +75,10 @@ align-items: center;
 padding-top: 25px;
 text-align: center;
 font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
+}
+
+.title .code {
+    font-size: 1.5em;
 }
 
 .save {

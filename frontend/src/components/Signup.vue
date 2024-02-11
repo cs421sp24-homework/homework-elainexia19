@@ -3,6 +3,7 @@
   <div class="content">
     <div class="header">
       <span class="left"><b>QYay!</b>, get connected through your live Q&A platform</span>
+      <button class="back" @click="goback">&laquo; Back</button>
     </div>
     <div class="welcome"><h1>Welcome to Qyay!</h1></div>
     <div class="login">
@@ -136,18 +137,32 @@ export default {
     position: relative;
     margin-left: auto;
     margin-right: auto;
-    width: 80%;
+    /* width: 80%; */
     height: 55px;
     background-color: #3498db;
 }
 
 .left {
     position: absolute;
-    left: 20px;
+    left: 200px;
     font-size: 20px;
     line-height: 55px;
     color: white;
     text-align: center;
+}
+
+.back {
+    position: absolute;
+    line-height: 45px;
+    right: 150px;
+    font-size: 17px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    padding: 0px 16px;
+    background-color: #f1f1f1;
+    color: black;
+    border: 5px solid #3498db;
 }
 
 .login {

@@ -3,11 +3,14 @@ import Router from 'vue-router'
 // import HelloWorld from '@/components/HelloWorld'
 
 const routerOptions = [
-  { path: "/", component: "Login" },
+  { path: "/", component: "Begin" },
+  { path: "/login", component: "Login" },
   { path: "/signup", component: "Signup" },
   { path: "/home", component: "Home" },
   { path: "/create_event", component: "CreateEvent" },
-  { path: "/code", component: "Code" }
+  { path: "/code", component: "Code" },
+  { path: "/join", component: "Join" },
+  { path: "/event", component: "Event" },
 ]
 const routes = routerOptions.map(route => {
   return {

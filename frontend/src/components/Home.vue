@@ -3,6 +3,7 @@
   <div class="content">
     <div class="header">
       <span class="left"><b>QYay!</b>, get connected through your live Q&A platform</span>
+      <button class="back" @click="goback">&laquo; Sign Out</button>
     </div>
     <div class="welcome"><h1>Welcome, {{ username }}!</h1></div>
     <div>
@@ -15,18 +16,20 @@
     <div class="login">
       <table class="events">
         <tr>
-          <th></th>
+          <th>No.</th>
           <th>Event</th>
           <th>Date</th>
           <th>Start Time</th>
           <th>End Time</th>
+          <th>Code</th>
         </tr>
         <tr class="elements" v-for="(event, index) in events" :key="event.id">
           <td>{{ index + 1 }}</td>
-          <td>{{ event.name }}<span class="dscrp" v-if="event.description"><br>{{ event.description }}</span></td>
+          <td class="event-name">{{ event.name }}<span class="dscrp" v-if="event.description"><br>{{ event.description }}</span></td>
           <td>{{ event.date }}</td>
           <td>{{ event.start_time }}</td>
           <td>{{ event.end_time }}</td>
+          <td>{{ event.code }}</td>
         </tr>
       </table>
       <!-- <ul class="events">
@@ -77,6 +80,9 @@ export default {
     },
     createEvent () {
       this.$router.replace({ path: "/create_event" })
+    },
+    goback () {
+      this.$router.replace({ path: "/login" })
     }
   }
 }
@@ -87,18 +93,37 @@ export default {
     position: relative;
     margin-left: auto;
     margin-right: auto;
-    width: 80%;
+    /* width: 80%; */
     height: 55px;
     background-color: #3498db;
 }
 
 .left {
     position: absolute;
-    left: 20px;
+    left: 200px;
     font-size: 20px;
     line-height: 55px;
     color: white;
     text-align: center;
+}
+
+.back {
+    position: absolute;
+    line-height: 45px;
+    right: 150px;
+    font-size: 17px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    padding: 0px 16px;
+    background-color: #f1f1f1;
+    color: black;
+    border: 5px solid #3498db;
+}
+
+.back:hover {
+    background: #405BE0;
+    color: white;
 }
 
 .login {
@@ -152,33 +177,48 @@ export default {
 
 .events {
   width: 70%;
-  padding: 20px 30px;
+  padding: 10px 25px;
   /* position: absolute; */
   /* top: 50%; */
   /* left: 50%; */
   /* background: #191919; */
-  border: 2px solid #3498db;
-  border-radius: 5px;
+  border: 4px solid rgb(199, 223, 245);
+  /* border-radius: 5px; */
   list-style: none;
   font-size: 1.1em;
+  border-collapse: collapse;
+  line-height: 16px;
 }
 
 .events th {
   text-align: left;
+  padding-left: 8px;
+  height: 40px;
+  background-color: rgb(199, 223, 245);
 }
 
-.events .elements:hover {
+.events tr:nth-child(odd) {
+  background-color: rgb(244, 247, 249);
+}
+
+.events td {
+  padding: 12px 8px;
+  /* background-color: rgb(236, 244, 250); */
+  /* border-top: 3px solid rgb(190, 205, 244); */
+}
+
+/* .events .elements:hover {
   background: #3498db;
   color: white;
-}
+} */
 
 .dscrp {
-  color: #646262;
-  font-size: 0.9em;
+  font-size: 0.8em;
+  color: #585c6d;
 }
 
-.dscrp:hover {
-  color: white;
+.event-name {
+  width: 450px;
 }
 
 .box input[type="text"],

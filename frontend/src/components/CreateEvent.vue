@@ -3,6 +3,7 @@
 <div class="content">
     <div class="header">
     <span class="left"><b>QYay!</b>, get connected through your live Q&A platform</span>
+    <button class="back" @click="goback">&laquo; Back</button>
     </div>
     <div class="welcome"><h1>Welcome to Qyay!</h1></div>
     <div class="login">
@@ -63,6 +64,7 @@
         />
         <p class="text-warning" v-if="timeError">{{ timeError }}</p>
         <input type="submit" name="create" value="Create"/>
+        <!-- <button class="cancel" @click="homepage"><b>Saved Code</b></button> -->
     </form>
     </div>
 </div>
@@ -131,6 +133,9 @@ export default {
                     this.timeError = 'Invalid end time'
                 }
             }
+        },
+        goback () {
+            this.$router.replace({ path: "/home" })
         }
     }
 }
@@ -141,19 +146,34 @@ export default {
     position: relative;
     margin-left: auto;
     margin-right: auto;
-    width: 80%;
+    /* width: 80%; */
     height: 55px;
     background-color: #3498db;
 }
 
 .left {
     position: absolute;
-    left: 20px;
+    left: 200px;
     font-size: 20px;
     line-height: 55px;
     color: white;
     text-align: center;
 }
+
+.back {
+    position: absolute;
+    line-height: 45px;
+    right: 150px;
+    font-size: 17px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    padding: 0px 16px;
+    background-color: #f1f1f1;
+    color: black;
+    border: 5px solid #3498db;
+}
+
 
 .login {
 font-family: sans-serif;
@@ -182,6 +202,24 @@ text-align: center;
 transition: 0.25s;
 margin-top: 40px;
 margin-bottom: 100px;
+}
+
+.box input[type="text"] {
+  border: 0;
+  background: none;
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 25px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  border: 2px solid #3498db;
+  padding: 12px 15px;
+  width: 250px;
+  outline: none;
+  /* color: white; */
+  border-radius: 15px;
+  transition: 0.25s;
 }
 
 .box textarea {
@@ -228,8 +266,10 @@ text-transform: uppercase;
 font-weight: 500;
 }
 
-.box input[type="text"]:focus {
-border-color: #405BE0;
+.box input[type="text"]:focus,
+.box textarea:focus {
+  width: 270px;
+  border-color: #405BE0;
 }
 
 .box input[type="date"]:focus,
