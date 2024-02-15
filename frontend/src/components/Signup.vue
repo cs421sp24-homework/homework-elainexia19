@@ -3,7 +3,7 @@
   <div class="content">
     <div class="header">
       <span class="left"><b>QYay!</b>, get connected through your live Q&A platform</span>
-      <button class="back" @click="goback">&laquo; Back</button>
+      <button class="back" @click="login">&laquo; Back</button>
     </div>
     <div class="welcome"><h1>Welcome to Qyay!</h1></div>
     <div class="login">
@@ -100,7 +100,7 @@ export default {
           this.usernameError = res.data.msg
           // this.signedin = res.data.signedin
           if (res.data.signedup == true) {
-            this.$router.replace({ path: "/" })
+            this.$router.replace({ path: "/login" })
           }
         }).catch(error => {
           console.error(error)
@@ -126,7 +126,7 @@ export default {
       }
     },
     login () {
-      this.$router.replace({ path: "/" })
+      this.$router.replace({ path: "/login" })
     }
   }
 }
