@@ -65,7 +65,7 @@
     <div class="login">
     <table class="questions">
         <div class="scroll-area">
-        <div v-if="questions.length == 0" style="font-size: 0.9em; color: rgb(77, 77, 77);">
+        <div v-if="questions.length == 0" style="font-size: 0.9em; color: rgb(77, 77, 77); padding-left: 10px; padding-top: 8px;">
             Participants have not posted any quesitons yet.
         </div>
         <tr class="elements" v-for="q in questions" :key="q[3]">

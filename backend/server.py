@@ -152,14 +152,6 @@ def create_event():
         cursor.execute(sql)
         inserted_id = cursor.lastrowid
         db.commit()
-        # digits = len(str(inserted_id))
-        # event_id = '0' * (3 - digits) + str(inserted_id)
-        # code = ''
-        # for i in range(3):
-        #     code += str(random.randint(0, 9))
-        #     code += event_id[i]
-        # formatted_code = code[:3] + '-' + code[3:]
-        # print(formatted_code)
         code = gen_code(inserted_id)
         update = f"update events set code='{code}' where id={inserted_id}"
         cursor.execute(update)

@@ -31,7 +31,7 @@
           <td>{{ event.start_time }}</td>
           <td>{{ event.end_time }}</td>
           <td>{{ event.code }}</td>
-          <td><button @click="openEvent(event.event_id)" :id="event.event_id">Open</button></td>
+          <td><button class="open-event" @click="openEvent(event.event_id)" :id="event.event_id">Open</button></td>
         </tr>
       </table>
       <!-- <ul class="events">
@@ -237,6 +237,27 @@ export default {
 
 .event-name {
   width: 400px;
+}
+
+.open-event {
+  border: 0;
+  background: none;
+  display: block;
+  /* margin: 20px auto; */
+  text-align: center;
+  border: 2px solid #405BE0;
+  padding: 3px 5px;
+  outline: none;
+  /* color: white; */
+  font-size: 15px;
+  border-radius: 5px;
+  /* transition: 0.25s; */
+  cursor: pointer;
+}
+
+.open-event:hover {
+  background: #405BE0;
+  color: white;
 }
 
 .box input[type="text"],
