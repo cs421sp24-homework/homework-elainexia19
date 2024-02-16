@@ -108,7 +108,7 @@ export default {
       }
     },
     validatePassword () {
-      const lengthRegex = /.{4,}/
+      const lengthRegex = /.{6,}/
       const digitRegex = /\d/
       const letterRegex = /[a-zA-Z]/
 
@@ -139,7 +139,7 @@ export default {
     margin-right: auto;
     /* width: 80%; */
     height: 55px;
-    background-color: #3498db;
+    background-color: #3e92e6;
 }
 
 .left {
@@ -162,7 +162,7 @@ export default {
     padding: 0px 16px;
     background-color: #f1f1f1;
     color: black;
-    border: 5px solid #3498db;
+    border: 5px solid #3e92e6;
 }
 
 .login {

@@ -34,7 +34,7 @@ export default {
     margin-right: auto;
     /* width: 80%; */
     height: 55px;
-    background-color: #3498db;
+    background-color: #3e92e6;
 }
 
 .left {

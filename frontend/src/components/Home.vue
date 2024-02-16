@@ -22,6 +22,7 @@
           <th>Start Time</th>
           <th>End Time</th>
           <th>Code</th>
+          <th>Action</th>
         </tr>
         <tr class="elements" v-for="(event, index) in events" :key="event.id">
           <td>{{ index + 1 }}</td>
@@ -30,6 +31,7 @@
           <td>{{ event.start_time }}</td>
           <td>{{ event.end_time }}</td>
           <td>{{ event.code }}</td>
+          <td><button @click="openEvent(event.event_id)" :id="event.event_id">Open</button></td>
         </tr>
       </table>
       <!-- <ul class="events">
@@ -81,6 +83,22 @@ export default {
     createEvent () {
       this.$router.replace({ path: "/create_event" })
     },
+    openEvent (event_id) {
+      const path = 'http://127.0.0.1:5000/home'
+      axios.post(path, event_id).then(res => {
+        console.log(res)
+        if (res.data.valid) {
+            // this.test = "show"
+            console.log("Event is validated")
+            // this.$router.replace({ path: "/event" })
+            this.$router.push({ path: '/event', query: { code: res.data.code, organizer: true } })
+        } else {
+            this.error = res.data.msg
+        }
+      }).catch(error => {
+        console.error(error)
+      })
+    },
     goback () {
       this.$router.replace({ path: "/login" })
     }
@@ -95,7 +113,7 @@ export default {
     margin-right: auto;
     /* width: 80%; */
     height: 55px;
-    background-color: #3498db;
+    background-color: #3e92e6;
 }
 
 .left {
@@ -118,7 +136,7 @@ export default {
     padding: 0px 16px;
     background-color: #f1f1f1;
     color: black;
-    border: 5px solid #3498db;
+    border: 5px solid #3e92e6;
 }
 
 .back:hover {
@@ -218,7 +236,7 @@ export default {
 }
 
 .event-name {
-  width: 450px;
+  width: 400px;
 }
 
 .box input[type="text"],
@@ -270,26 +288,6 @@ export default {
 .box input[type="submit"]:hover {
   background: #405BE0;
   color: white;
-}
-
-.link-text {
-  color: #86A8FA;
-  text-decoration: underline;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.link-text:hover {
-  color: #2340CF;
-}
-
-.text-warning {
-  color: #EE3D34;
-}
-
-.alert {
-  margin-top: 10px;
-  color: red;
 }
 </style>
 

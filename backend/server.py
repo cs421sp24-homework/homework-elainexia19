@@ -99,10 +99,30 @@ def home():
         results = cursor.fetchall()
         events = []
         for result in results:
-            event = {'name': result[1], 'description': result[2], 'date': result[4].strftime('%Y-%m-%d'),
+            event = {'event_id': result[0], 'name': result[1], 'description': result[2], 'date': result[4].strftime('%Y-%m-%d'),
                      'start_time': str(result[5])[:5], 'end_time': str(result[6])[:5], 'code': result[7]}
             events.append(event)
         ret_data = {'username': user['username'], 'events': events}
+        return jsonify(ret_data)
+    if request.method == 'POST':
+        req_data = request.get_data()
+        event_id = req_data.decode()
+        # print("code:", code)
+        # isValid = False
+        error = ''
+        sql = f"select code from events where id='{event_id}'"
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        print(result)
+        # if not result:
+        #     error = 'Invalid Code'
+        #     # print("error code:", code)
+        # else:
+        #     isValid = True
+        #     print("event name:", result[1])
+        #     # event['id'], event['name'], event['description'], event['organizer_id'],
+        #     # event['date'], event['start_time'], event['end_time'] = result
+        ret_data = {'valid': True, 'code': result[0], 'msg': error}
         return jsonify(ret_data)
 
 def gen_code(event_id):
@@ -176,31 +196,53 @@ def join():
     
 @app.route('/event', methods=['POST'])
 def event():
-    if request.method == 'POST':
-        req_data = request.get_json()
-        code = req_data['code']
-        print("code:", code)
-        sql = f"select * from events where code='{code}'"
-        cursor.execute(sql)
-        results = cursor.fetchone()
-        event_id = results[0]
+    is_user = False
+    req_data = request.get_json()
+    code = req_data['code']
+    print("code:", code)
+    sql = f"select * from events where code='{code}'"
+    cursor.execute(sql)
+    results = cursor.fetchone()
+    event_id = results[0]
+    form = req_data['type']
+    if form == "question":
         question = req_data['question']
         if question:
-            sql = f"insert into questions (question, event_id, votes) values ('{question}', '{event_id}', 0)"
+            sql = f"insert into questions (question, event_id, votes, answered) values ('{question}', '{event_id}', 0, 0)"
             cursor.execute(sql)
             db.commit()
-        sql = f"select * from questions where event_id='{event_id}'"
-        cursor.execute(sql)
-        questions = cursor.fetchall()
-        # print("last question:", questions[-1][1])
-        sql = f"select * from event_organizer where id='{event_id}'"
-        cursor.execute(sql)
-        result = cursor.fetchone()
-        organizer = result[8]
-        event = {'name': result[1], 'description': result[2], 'date': result[4].strftime('%Y-%m-%d'),
-                        'start_time': str(result[5])[:5], 'end_time': str(result[6])[:5]}
-        ret_data = {'questions': questions, 'organizer': organizer, 'event': event}
-        return jsonify(ret_data)
+    if form == "vote":
+        question_id = req_data['question_id']
+        isUpvote = req_data['isUpvote']
+        # print(question_id, isUpvote)
+        if isUpvote:
+            update = f"update questions set votes=votes+1 where id='{question_id}'"
+        else:
+            update = f"update questions set votes=votes-1 where id='{question_id}'"
+        cursor.execute(update)
+        db.commit()
+    if form == "mark":
+        question_id = req_data['question_id']
+        isMarked = req_data['isMarked']
+        print(question_id, isMarked)
+        if isMarked:
+            update = f"update questions set answered=0 where id='{question_id}'"
+        else:
+            update = f"update questions set answered=1 where id='{question_id}'"
+        cursor.execute(update)
+        db.commit()
+    sql = f"select * from questions where event_id='{event_id}'"
+    cursor.execute(sql)
+    questions = cursor.fetchall()
+    # print("last question:", questions[-1][1])
+    sql = f"select * from event_organizer where id='{event_id}'"
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    organizer = result[8]
+    event = {'name': result[1], 'description': result[2], 'date': result[4].strftime('%Y-%m-%d'),
+                    'start_time': str(result[5])[:5], 'end_time': str(result[6])[:5]}
+    ret_data = {'questions': questions, 'organizer': organizer, 'event': event, 'isUser': is_user}
+    return jsonify(ret_data)
 
 
 # @app.route('/logout')
