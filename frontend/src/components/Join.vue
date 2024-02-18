@@ -58,7 +58,7 @@ export default {
                     // this.test = "show"
                     console.log("Event is validated")
                     // this.$router.replace({ path: "/event" })
-                    this.$router.push({ path: '/event', query: { code: this.code, organizer: false } })
+                    this.$router.push({ path: '/event', query: { code: this.code, organizer: 'none' } })
                 } else {
                     this.error = res.data.msg
                 }

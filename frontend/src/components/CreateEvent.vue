@@ -35,6 +35,7 @@
         name="start_date"
         placeholder="mm-dd-yyyy"
         v-model="EventForm.date"
+        :min="minDate"
         required
         oninvalid="this.setCustomValidity('Date is required')"
         oninput="this.setCustomValidity('')"
@@ -47,8 +48,9 @@
         name="start_time"
         placeholder="Please enter start time"
         v-model="EventForm.start_time"
+        :min="minStartTime"
         required
-        oninvalid="this.setCustomValidity('Start time is required')"
+        oninvalid="this.setCustomValidity('Start time is invalid')"
         oninput="this.setCustomValidity('')"
         />
         <p class="hint">End Time</p>
@@ -57,9 +59,9 @@
         name="end_time"
         placeholder="Please enter end time"
         v-model="EventForm.end_time"
-        @input="validateTime"
+        :min="minEndTime"
         required
-        oninvalid="this.setCustomValidity('End time is required')"
+        oninvalid="this.setCustomValidity('End time is invalid')"
         oninput="this.setCustomValidity('')"
         />
         <p class="text-warning" v-if="timeError">{{ timeError }}</p>
@@ -92,6 +94,29 @@ export default {
     mounted() {
         this.fetchUsername()
     },
+    computed: {
+        minDate() {
+            const today = new Date().toISOString().split('T')[0]
+            return today
+        },
+        minStartTime() {
+            const now = new Date()
+            const today = now.toISOString().split('T')[0]
+            // console.log(today, this.EventForm.date)
+            if (this.EventForm.date == today) {
+                const hours = now.getHours().toString().padStart(2, '0')
+                const minutes = now.getMinutes().toString().padStart(2, '0')
+                // console.log(`${hours}:${minutes}`)
+                return `${hours}:${minutes}`
+            } else {
+                return
+            }
+        },
+        minEndTime() {
+            // console.log(this.EventForm.start_time)
+            return this.EventForm.start_time
+        }
+    },
     methods: {
         async fetchUsername () {
             try{
@@ -118,20 +143,6 @@ export default {
                 }).catch(error => {
                     console.error(error)
                 })
-            }
-        },
-        validateTime () {
-            const date1 = new Date(`2000-01-01T${this.EventForm.start_time}`);
-            const date2 = new Date(`2000-01-01T${this.EventForm.end_time}`);
-
-            if (isNaN(date1) || isNaN(date2)) {
-                this.timeError = ''
-            } else {
-                if (date1 < date2) {
-                    this.timeError = ''
-                } else {
-                    this.timeError = 'Invalid end time'
-                }
             }
         },
         goback () {

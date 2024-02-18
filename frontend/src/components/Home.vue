@@ -13,7 +13,7 @@
         <h2>My Events</h2>
       </div>
     </div>
-    <div class="login">
+    <div class="login" v-if="events.length > 0">
       <table class="events">
         <tr>
           <th>No.</th>
@@ -31,7 +31,7 @@
           <td>{{ event.start_time }}</td>
           <td>{{ event.end_time }}</td>
           <td>{{ event.code }}</td>
-          <td><button class="open-event" @click="openEvent(event.event_id)" :id="event.event_id">Open</button></td>
+          <td><button class="open-event" :id="event.event_id" @click="openEvent(event.event_id)">Open</button></td>
         </tr>
       </table>
       <!-- <ul class="events">
@@ -50,6 +50,7 @@ import axios from 'axios'
 export default {
   data () {
     return {
+      user_id: null,
       username: null,
       events: null
     }
@@ -63,8 +64,9 @@ export default {
       try{
         const path = 'http://127.0.0.1:5000/home'
         const res = await axios.get(path)
+        this.user_id = res.data.user_id
         this.username = res.data.username
-        if (!this.username) {
+        if (this.user_id == '') {
           this.$router.replace({ path: "/" })
         }
       } catch(error) {
@@ -91,7 +93,7 @@ export default {
             // this.test = "show"
             console.log("Event is validated")
             // this.$router.replace({ path: "/event" })
-            this.$router.push({ path: '/event', query: { code: res.data.code, organizer: true } })
+            this.$router.push({ path: '/event', query: { code: res.data.code, organizer: this.user_id } })
         } else {
             this.error = res.data.msg
         }
@@ -259,6 +261,11 @@ export default {
   background: #405BE0;
   color: white;
 }
+
+/* .open-event:disabled {
+  border: 2px solid #a3a3a3;
+  color: #939393;
+} */
 
 .box input[type="text"],
 .box input[type="password"] {

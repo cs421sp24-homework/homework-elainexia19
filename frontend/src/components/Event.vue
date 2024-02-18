@@ -6,7 +6,7 @@
     <button class="back" @click="goback">&laquo; Exit Event</button>
     </div>
     <div class="welcome"><h1>Welcome to QYay!</h1></div>
-    <div v-if="isUser == 'false'">
+    <div v-if="isUser == 'none'">
     <div><div class="info">
         Event: {{ event.name }}
         &nbsp;&nbsp;&nbsp;>>>&nbsp;&nbsp;&nbsp;
@@ -14,16 +14,18 @@
         <br>
         <div v-if="event.description">Description: {{ event.description }}<br></div>
         {{ event.date }} {{ event.start_time }}-{{ event.end_time }}
-        <h3>Post questions here for the organizer</h3>
+        <h3 v-if="isValid == 'valid'">Post questions here for the organizer</h3>
+        <h3 v-else-if="isValid == 'early'">Event has not started yet</h3>
+        <h3 v-else-if="isValid == 'late'">Event has ended, you can only view questions</h3>
     </div></div>
     <div class="login">
     <table class="questions">
         <div class="scroll-area">
-        <div v-if="questions.length == 0" style="font-size: 0.9em; color: rgb(77, 77, 77);">
+        <div v-if="questions.length == 0" 
+            style="font-size: 0.9em; color: rgb(77, 77, 77); padding-left: 10px; padding-top: 8px;">
             No questions posted yet, submit a question to get started.
         </div>
-        <tr class="elements" v-for="(q, index) in questions">
-            <!-- <td>{{ index }}</td> -->
+        <tr class="elements" v-for="q in questions">
             <td class="vote">
                 <span class="check" v-if="q[4]">
                     <i class='far fa-check-circle'/>
@@ -42,17 +44,17 @@
             <input 
                 type="text"
                 name="question"
-                v-model="Form.question"
+                v-model="questionForm.question"
                 placeholder="Post questions ..."
                 required
                 oninvalid="this.setCustomValidity('Question can\'t be empty')"
                 oninput="this.setCustomValidity('')"
             >
-            <input type="submit" name="submit" value="Post">
+            <input type="submit" name="submit" value="Post" :disabled="isValid != 'valid'">
         </form>
         <!-- <button class="create" @click="createEvent"><b>Post</b></button> -->
     </div></div>
-    <div v-if="isUser == 'true'">
+    <div v-if="isUser != 'none'">
     <div><div class="info">
         Event: {{ event.name }}
         &nbsp;&nbsp;&nbsp;>>>&nbsp;&nbsp;&nbsp;
@@ -60,25 +62,22 @@
         <br>
         <div v-if="event.description">Description: {{ event.description }}<br></div>
         {{ event.date }} {{ event.start_time }}-{{ event.end_time }}
-        <h3>Questions posted by participants</h3>
+        <h3 v-if="isValid == 'valid'">Questions posted by participants</h3>
+        <h3 v-else-if="isValid == 'early'">Event has not started yet</h3>
+        <h3 v-else-if="isValid == 'late'">Event has ended, you can only view questions</h3>
     </div></div>
     <div class="login">
     <table class="questions">
         <div class="scroll-area">
-        <div v-if="questions.length == 0" style="font-size: 0.9em; color: rgb(77, 77, 77); padding-left: 10px; padding-top: 8px;">
+        <div v-if="questions.length == 0" 
+            style="font-size: 0.9em; color: rgb(77, 77, 77); padding-left: 10px; padding-top: 8px;">
             Participants have not posted any quesitons yet.
         </div>
         <tr class="elements" v-for="q in questions" :key="q[3]">
             <td class="vote">
-                <!-- <i class='far fa-thumbs-up upvote'/> -->
                 <span class="check" v-if="q[4]"><i @click="markQuestion(q[0], q[4])" class='far fa-check-circle'/></span>
                 <span class="no-check" v-if="!q[4]"><i @click="markQuestion(q[0], q[4])" class='far fa-check-circle'/></span>
                 <span class="num">{{ q[3] }}</span>
-                <!-- <i class='far fa-thumbs-down downvote'/> -->
-                <!-- <span class="vote-icons">
-                    <i class='far fa-thumbs-up upvote'/>
-                    <i class='far fa-thumbs-down downvote'/>
-                </span> -->
             </td>
             <td class="question">{{ q[1] }}</td>
         </tr>
@@ -97,89 +96,120 @@ data () {
         organizer: null,
         questions: null,
         event: null,
+        isValid: null,
         isUser: this.$route.query.organizer,
-        // code: null,
-        // question: null
-        Form: {
+        dataForm: {
+            type: "data",
+            code: this.$route.query.code
+        },
+        refreshForm: {
+            type: "refresh",
+            event_id: null
+        },
+        questionForm: {
             type: "question",
-            code: this.$route.query.code,
+            event_id: null,
             question: null
         },
         voteForm: {
             type: "vote",
-            code: this.$route.query.code,
+            event_id: null,
             question_id: null,
             isUpvote: true
         },
         markForm: {
             type: "mark",
-            code: this.$route.query.code,
+            event_id: null,
             question_id: null,
             isMarked: false
         }
-        // settings: {
-        //     suppressScrollY: false,
-        //     suppressScrollX: true,
-        //     wheelPropagation: false
-        // }
     }
 },
-created () {
+mounted () {
     const path = 'http://127.0.0.1:5000/event'
-    axios.post(path, this.Form).then(res => {
+    axios.post(path, this.dataForm).then(res => {
         console.log(res)
         this.questions = res.data.questions
         this.organizer = res.data.organizer
         this.event = res.data.event
-        // this.isUser = res.data.isUser
+        this.refreshForm.event_id = this.event.id
+        this.questionForm.event_id = this.event.id
+        this.voteForm.event_id = this.event.id
+        this.markForm.event_id = this.event.id
+        const currentTime = new Date();
+        const startTime = new Date(`${this.event.date}T${this.event.start_time}`)
+        const endTime = new Date(`${this.event.date}T${this.event.end_time}`)
+        if (currentTime >= startTime && currentTime <= endTime) {
+            this.isValid = 'valid'
+        } else if (currentTime < startTime) {
+            this.isValid = 'early'
+        } else {
+            this.isValid = 'late'
+        }
     }).catch(error => {
-    console.error(error)
+        console.error(error)
     })
+
+    setInterval(this.fetchData, 2000)
 },
 methods: {
+    fetchData () {
+      if (this.isValid == 'valid') {
+        const path = 'http://127.0.0.1:5000/event'
+        axios.post(path, this.refreshForm).then(res => {
+            console.log(res)
+            this.questions = res.data.questions
+        }).catch(error => {
+        console.error(error)
+        })
+      }
+    },
     postQuestion () {
       const path = 'http://127.0.0.1:5000/event'
-      axios.post(path, this.Form).then(res => {
+      axios.post(path, this.questionForm).then(res => {
         console.log(res)
-        this.Form.question = ''
+        this.questionForm.question = ''
         this.questions = res.data.questions
       }).catch(error => {
         console.error(error)
       })
     },
     upvoteQuestion (question_id) {
-      const path = 'http://127.0.0.1:5000/event'
-    //   console.log("question id:", question_id)
-      const isActive = document.getElementById(question_id).classList.contains('far')
-      this.voteForm.question_id = question_id
-      this.voteForm.isUpvote = isActive
-      if (isActive) {
-        document.getElementById(question_id).classList.remove('far')
-        document.getElementById(question_id).classList.add('fa-solid')
-      } else {
-        document.getElementById(question_id).classList.remove('fa-solid')
-        document.getElementById(question_id).classList.add('far')
-      }
-      axios.post(path, this.voteForm).then(res => {
+      if (this.isValid == 'valid') {
+        const path = 'http://127.0.0.1:5000/event'
+        const isActive = document.getElementById(question_id).classList.contains('far')
+        this.voteForm.question_id = question_id
+        this.voteForm.isUpvote = isActive
+        if (isActive) {
+            document.getElementById(question_id).classList.remove('far')
+            document.getElementById(question_id).classList.add('fa-solid')
+        } else {
+            document.getElementById(question_id).classList.remove('fa-solid')
+            document.getElementById(question_id).classList.add('far')
+        }
+        axios.post(path, this.voteForm).then(res => {
         console.log(res)
         this.questions = res.data.questions
-      }).catch(error => {
-        console.error(error)
-      })
+        }).catch(error => {
+            console.error(error)
+        })
+      }
     },
     markQuestion (question_id, question_marked) {
-      const path = 'http://127.0.0.1:5000/event'
-      this.markForm.question_id = question_id
-      this.markForm.isMarked = question_marked
-      axios.post(path, this.markForm).then(res => {
-        console.log(res)
-        this.questions = res.data.questions
-      }).catch(error => {
-        console.error(error)
-      })
+      if (this.isValid == 'valid') {
+        const path = 'http://127.0.0.1:5000/event'
+        this.markForm.question_id = question_id
+        this.markForm.isMarked = question_marked
+        axios.post(path, this.markForm).then(res => {
+            console.log(res)
+            this.questions = res.data.questions
+        }).catch(error => {
+            console.error(error)
+        })
+      }
     },
     goback () {
-        if (this.isUser == 'true') {
+        if (this.isUser != 'none') {
             this.$router.replace({ path: "/home" })
         } else {
             this.$router.replace({ path: "/join" })
@@ -259,28 +289,19 @@ margin-top: 60px;
 } */
 
 .questions {
-width: 70%;
+width: 60%;
 padding: 15px;
-/* position: absolute; */
-/* top: 50%; */
-/* left: 50%; */
-/* background: #191919; */
 border: 3px solid rgb(219, 231, 239);
-/* border-radius: 5px; */
 list-style: none;
 font-size: 1.1em;
 border-collapse: collapse;
 }
 
-/* .questions td {
-    border-bottom: 1px solid gray;
-} */
-
 .questions tr:nth-child(odd) {
   background-color: rgb(244, 247, 249);
 }
 
-.questions .question {
+.question {
     padding: 6px;
 }
 
@@ -357,7 +378,7 @@ font-size: 20px;
 }
 
 .typebox {
-    width: 70%;
+    width: 60%;
     margin-top: 50px;
     margin-left: auto;
     margin-right: auto;
@@ -366,7 +387,7 @@ font-size: 20px;
 .typebox input[type="text"] {
     border: 2px solid #3498db;
     padding: 5px;
-    width: 90%;
+    width: 89.8%;
     /* color: white; */
     border-radius: 5px;
     /* transition: 0.25s; */
@@ -380,7 +401,7 @@ font-size: 20px;
 .typebox input[type="submit"] {
   background: none;
   text-align: center;
-  width: 8.3%;
+  width: 8%;
   border: 2px solid #405BE0;
   padding: 5px;
   /* margin-left: 15px; */
@@ -394,5 +415,16 @@ font-size: 20px;
 .typebox input[type="submit"]:hover {
   background: #405BE0;
   color: white;
+}
+
+.typebox input[type="submit"]:disabled {
+  border: 2px solid #b5b5b5;
+  color: #939393;
+  cursor: not-allowed;
+}
+
+/* Remove hover effect for disabled state */
+.typebox input[type="submit"]:disabled:hover {
+  background-color: #dddddd;
 }
 </style>
