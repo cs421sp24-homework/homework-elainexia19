@@ -9,7 +9,6 @@
     <div class="login">
       <form class="box" @submit.prevent="getUserSignup">
         <h2>Signup</h2>
-        <!-- <p>Please enter username and password</p> -->
         <p class="hint">Username</p>
         <input
           type="text"
@@ -21,7 +20,6 @@
           oninput="this.setCustomValidity('')"
         />
         <p class="text-warning" v-if="usernameError">{{ usernameError }}</p>
-        <!-- <p>Username is {{ LoginForm.username }}</p> -->
         <p class="hint">Password</p>
         <p class="hint-small">Password should be at least 6 characters long, 
           contain at least one digit and one letter.</p>
@@ -36,7 +34,6 @@
           oninput="this.setCustomValidity('')"
         />
         <p class="text-warning" v-if="passwordError">{{ passwordError }}</p>
-        <!-- <p>Password is {{ LoginForm.password }}</p> -->
         <p class="hint">Re-enter password</p>
         <input
           type="password"
@@ -80,16 +77,6 @@ export default {
       repasswordError: '',
       signedin: false
     }
-  },
-  mounted() {
-    // Wait for 2 seconds using setTimeout
-    setTimeout(() => {
-      // Check if specific data condition is met
-      if (this.signedin) {
-        // Redirect to another page using the Vue Router
-        this.$router.push('/');
-      }
-    }, 2000); // 2000 milliseconds = 2 seconds
   },
   methods: {
     getUserSignup () {
@@ -281,22 +268,4 @@ export default {
   color: #9d9c9c;
 }
 </style>
-  
-  <!-- Add "scoped" attribute to limit CSS to this component only -->
-  <!-- <style scoped>
-  h1, h2 {
-    font-weight: normal;
-  }
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  li {
-    display: inline-block;
-    margin: 0 10px;
-  }
-  a {
-    color: #42b983;
-  }
-  </style> -->
   

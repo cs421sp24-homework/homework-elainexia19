@@ -52,7 +52,6 @@
             >
             <input type="submit" name="submit" value="Post" :disabled="isValid != 'valid'">
         </form>
-        <!-- <button class="create" @click="createEvent"><b>Post</b></button> -->
     </div></div>
     <div v-if="isUser != 'none'">
     <div><div class="info">
@@ -214,10 +213,7 @@ methods: {
         } else {
             this.$router.replace({ path: "/join" })
         }
-    },
-    // scrollHanle(evt) {
-    //     console.log(evt)
-    // }
+    }
 }
 }
 </script>
@@ -283,10 +279,6 @@ font-size: 1.3em;
 line-height: 30px;
 font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
 }
-
-/* .title h3 {
-margin-top: 60px;
-} */
 
 .questions {
 width: 60%;
@@ -423,7 +415,6 @@ font-size: 20px;
   cursor: not-allowed;
 }
 
-/* Remove hover effect for disabled state */
 .typebox input[type="submit"]:disabled:hover {
   background-color: #dddddd;
 }

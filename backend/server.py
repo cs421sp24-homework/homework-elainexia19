@@ -13,9 +13,6 @@ app.config['SECRET_KEY'] = '123456'
 
 cors = CORS(app)
 
-# login_manager = LoginManager()
-# login_manager.init_app(app)
-
 db = pymysql.connect(host='34.27.57.204', port=3306, charset='utf8', database="data", user='root', password='mysql')
 cursor = db.cursor()
 
@@ -25,16 +22,10 @@ event = {'id': '', 'name': '', 'description': '', 'organizer_id': '', 'date': ''
  
 @app.route('/', methods=['GET'])
 def hello_world():
-    # sql = 'select example from test'
-    # cursor.execute(sql)
-    # result = cursor.fetchone()
-    # print(result)
     return "Hello World"
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    # if request.method == 'GET':
-    #     return render_template('index.html')
     if request.method == 'POST':
         req_data = request.get_json()
         username = req_data['username']
@@ -45,11 +36,8 @@ def login():
         cursor.execute(sql)
         result = cursor.fetchone()
         if result:
-            # print(result[0], result[1])
             user['id'] = result[0]
             user['username'] = result[1]
-            # user = load_user(result[0], result[1])
-            # login_user(user)
             isLoggedIn = True
         else:
             error = 'Incorrect username or password'
@@ -58,8 +46,6 @@ def login():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    # if request.method == 'GET':
-    #     return render_template('index.html')
     if request.method == 'POST':
         req_data = request.get_json()
         username = req_data['username']
@@ -80,14 +66,12 @@ def signup():
                 sql1 = f"insert into organizer (username, password) values ('{username}', '{password}')"
             cursor.execute(sql1)
             db.commit()
-            # print("account created", username, password, email)
         ret_data = {'signedup': isSignedUp, 'msg': error}
         return jsonify(ret_data)
     
 @app.route('/home', methods=['GET', 'POST'])
 def home():
     if request.method == 'GET':
-        print(user['id'])
         if user['id'] == '':
             ret_data = {'user_id': user['id'], 'username': user['username']}
             return jsonify(ret_data)
@@ -108,7 +92,6 @@ def home():
         sql = f"select code from events where id='{event_id}'"
         cursor.execute(sql)
         result = cursor.fetchone()
-        # print(result)
         ret_data = {'valid': True, 'code': result[0], 'msg': error}
         return jsonify(ret_data)
 
@@ -129,7 +112,6 @@ def create_event():
         date = req_data['date']
         start_time = req_data['start_time']
         end_time = req_data['end_time']
-        # print("event created", date, start_time, end_time, description)
         if description:
             sql = f"insert into events (name, description, organizer_id, date, start_time, end_time) \
                 values ('{name}', '{description}', {user['id']}, '{date}', '{start_time}', '{end_time}')"
@@ -156,7 +138,6 @@ def join():
     if request.method == 'POST':
         req_data = request.get_data()
         code = req_data.decode()
-        # print("code:", code)
         isValid = False
         error = ''
         sql = f"select * from events where code='{code}'"
@@ -166,7 +147,6 @@ def join():
             error = 'Invalid Code'
         else:
             isValid = True
-            print("event name:", result[1])
         ret_data = {'valid': isValid, 'msg': error}
         return jsonify(ret_data)
     
@@ -183,7 +163,6 @@ def event():
         sql = f"select * from questions where event_id='{event_id}'"
         cursor.execute(sql)
         questions = cursor.fetchall()
-        # print("last question:", questions[-1][1])
         sql = f"select * from event_organizer where id='{event_id}'"
         cursor.execute(sql)
         result = cursor.fetchone()
@@ -208,7 +187,6 @@ def event():
         elif form == "vote":
             question_id = req_data['question_id']
             isUpvote = req_data['isUpvote']
-            # print(question_id, isUpvote)
             if isUpvote:
                 update = f"update questions set votes=votes+1 where id='{question_id}'"
             else:
@@ -218,7 +196,6 @@ def event():
         elif form == "mark":
             question_id = req_data['question_id']
             isMarked = req_data['isMarked']
-            # print(question_id, isMarked)
             if isMarked:
                 update = f"update questions set answered=0 where id='{question_id}'"
             else:
@@ -228,26 +205,8 @@ def event():
         sql = f"select * from questions where event_id='{event_id}'"
         cursor.execute(sql)
         questions = cursor.fetchall()
-        # print("last question:", questions[-1][1])
-        # sql = f"select * from event_organizer where id='{event_id}'"
-        # cursor.execute(sql)
-        # result = cursor.fetchone()
-        # organizer = result[8]
-        # event = {'name': result[1], 'description': result[2], 'date': result[4].strftime('%Y-%m-%d'),
-        #                 'start_time': str(result[5])[:5], 'end_time': str(result[6])[:5]}
         ret_data = {'questions': questions}
         return jsonify(ret_data)
-        # except Exception as e:
-        #     print("error:", e)
-        #     ret_data = {}
-        #     return jsonify(ret_data)
-
-
-# @app.route('/logout')
-# @login_required
-# def logout():
-#     logout_user()
-#     return 'Logged out successfully.'
 
 
 if __name__ == '__main__':

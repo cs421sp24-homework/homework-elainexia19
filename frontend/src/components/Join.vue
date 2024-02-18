@@ -32,37 +32,18 @@ export default {
             error: null
         }
     },
-    // computed() {
-    //     code: {
-            
-    //     }
-    // },
     methods: {
-        // async fetchUsername () {
-        //     try{
-        //         const path = 'http://127.0.0.1:5000/join'
-        //         const res = await axios.get(path)
-        //         this.username = res.data.username
-        //         if (!this.username) {
-        //         this.$router.replace({ path: "/" })
-        //         }
-        //     } catch(error) {
-        //         console.error(error)
-        //     }
-        // },
         joinEvent () {
             const path = 'http://127.0.0.1:5000/join'
             axios.post(path, this.code).then(res => {
                 console.log(res)
                 if (res.data.valid) {
-                    // this.test = "show"
                     console.log("Event is validated")
                     // this.$router.replace({ path: "/event" })
                     this.$router.push({ path: '/event', query: { code: this.code, organizer: 'none' } })
                 } else {
                     this.error = res.data.msg
                 }
-            // alter('Success' + response.status + ',' + response.data + ',' + msg)
             }).catch(error => {
                 console.error(error)
             })

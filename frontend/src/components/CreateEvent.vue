@@ -9,7 +9,6 @@
     <div class="login">
     <form class="box" @submit.prevent="getUserSignup">
         <h2>Create Event</h2>
-        <!-- <p>Please enter username and password</p> -->
         <p class="hint">Event Name</p>
         <input
         type="text"
@@ -20,15 +19,12 @@
         oninvalid="this.setCustomValidity('Event name is required')"
         oninput="this.setCustomValidity('')"
         />
-        <!-- <p class="text-warning" v-if="nameError">{{ nameError }}</p> -->
-        <!-- <p>Username is {{ LoginForm.username }}</p> -->
         <p class="hint">Event Description</p>
         <textarea
         name="name"
         placeholder="Please enter description for event"
         v-model="EventForm.description"
         />
-        <!-- <p class="text-warning" v-if="nameError">{{ nameError }}</p> -->
         <p class="hint">Event Date</p>
         <input
         type="date"
@@ -40,8 +36,6 @@
         oninvalid="this.setCustomValidity('Date is required')"
         oninput="this.setCustomValidity('')"
         />
-        <!-- <p class="text-warning" v-if="dateError">{{ dateError }}</p> -->
-        <!-- <p>Password is {{ LoginForm.password }}</p> -->
         <p class="hint">Start Time</p>
         <input
         type="time"
@@ -66,7 +60,6 @@
         />
         <p class="text-warning" v-if="timeError">{{ timeError }}</p>
         <input type="submit" name="create" value="Create"/>
-        <!-- <button class="cancel" @click="homepage"><b>Saved Code</b></button> -->
     </form>
     </div>
 </div>
@@ -102,7 +95,6 @@ export default {
         minStartTime() {
             const now = new Date()
             const today = now.toISOString().split('T')[0]
-            // console.log(today, this.EventForm.date)
             if (this.EventForm.date == today) {
                 const hours = now.getHours().toString().padStart(2, '0')
                 const minutes = now.getMinutes().toString().padStart(2, '0')
@@ -113,7 +105,6 @@ export default {
             }
         },
         minEndTime() {
-            // console.log(this.EventForm.start_time)
             return this.EventForm.start_time
         }
     },
@@ -135,9 +126,7 @@ export default {
             const path = 'http://127.0.0.1:5000/create_event'
             if (!this.dateError && !this.timeError){
                 axios.post(path, this.EventForm).then(res => {
-                    // this.signedin = res.data.signedin
                     if (!this.timeError) {
-                        // this.$router.replace({ path: "/home" })
                         this.$router.push({ path: '/code', query: { code: res.data.code } })
                     }
                 }).catch(error => {
@@ -343,21 +332,3 @@ font-size: 0.8em;
 color: #9d9c9c;
 }
 </style>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<!-- <style scoped>
-h1, h2 {
-    font-weight: normal;
-}
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-li {
-    display: inline-block;
-    margin: 0 10px;
-}
-a {
-    color: #42b983;
-}
-</style> -->

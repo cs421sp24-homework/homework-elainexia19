@@ -9,8 +9,6 @@
     <div class="login">
       <form class="box" @submit.prevent="postUserLogin">
         <h2>Login</h2>
-        <!-- <p>Please enter username and password</p> -->
-        <!-- <p class="text-warning" v-for="item in error" :key="item.id">{{ item }}</p> -->
         <input
           type="text"
           name="username"
@@ -20,7 +18,6 @@
           oninvalid="this.setCustomValidity('Username is required')"
           oninput="this.setCustomValidity('')"
         />
-        <!-- <p>Username is {{ LoginForm.username }}</p> -->
         <input
           type="password"
           name="password"
@@ -30,10 +27,8 @@
           oninvalid="this.setCustomValidity('Password is required')"
           oninput="this.setCustomValidity('')"
         />
-        <!-- <p>Password is {{ LoginForm.password }}</p> -->
         <input type="submit" name="login" value="Login" />
         <p class="text-warning" v-if="error">{{ error }}</p>
-        <!-- <p v-if="test">{{ test }}</p> -->
         <p class="link-text" @click="signup">No account? Sign up here!</p>
       </form>
     </div>
@@ -66,7 +61,6 @@ export default {
         } else {
           this.error = res.data.msg
         }
-        // alter('Success' + response.status + ',' + response.data + ',' + msg)
       }).catch(error => {
         console.error(error)
       })
@@ -220,21 +214,3 @@ export default {
   color: red;
 }
 </style>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<!-- <style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style> -->

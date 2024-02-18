@@ -34,12 +34,6 @@
           <td><button class="open-event" :id="event.event_id" @click="openEvent(event.event_id)">Open</button></td>
         </tr>
       </table>
-      <!-- <ul class="events">
-        <li v-for="(event, index) in events" :key="event.id">
-          {{ index+1 }} {{ event.name }} {{ event.description }} {{ event.date }} 
-          {{ event.start_time }} {{ event.end_time }} {{ event.code }}
-        </li>
-      </ul> -->
     </div>
   </div>
 </template>
@@ -227,11 +221,6 @@ export default {
   /* border-top: 3px solid rgb(190, 205, 244); */
 }
 
-/* .events .elements:hover {
-  background: #3498db;
-  color: white;
-} */
-
 .dscrp {
   font-size: 0.8em;
   color: #585c6d;
@@ -261,11 +250,6 @@ export default {
   background: #405BE0;
   color: white;
 }
-
-/* .open-event:disabled {
-  border: 2px solid #a3a3a3;
-  color: #939393;
-} */
 
 .box input[type="text"],
 .box input[type="password"] {
@@ -318,21 +302,3 @@ export default {
   color: white;
 }
 </style>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<!-- <style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style> -->
